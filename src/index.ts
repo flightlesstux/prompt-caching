@@ -13,6 +13,7 @@ import {
   handleGetCacheStats,
   handleResetCacheStats,
   handleAnalyzeCacheability,
+  handleRecordUsage,
   handleUnknownTool,
 } from './handlers.js'
 
@@ -143,6 +144,38 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         },
       },
     },
+    {
+      name: 'record_usage',
+      description:
+        'Record token usage from an Anthropic API response into the session stats. Call this after every API response to track cumulative cache savings. Pass the usage object from the response.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          input_tokens:                  { type: 'number', description: 'Total input tokens billed.' },
+          output_tokens:                 { type: 'number', description: 'Total output tokens billed.' },
+          cache_creation_input_tokens:   { type: 'number', description: 'Tokens written to cache (costs 1.25×).' },
+          cache_read_input_tokens:       { type: 'number', description: 'Tokens read from cache (costs 0.1×).' },
+        },
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          recorded: { type: 'boolean' },
+          sessionStats: {
+            type: 'object',
+            properties: {
+              turns:                { type: 'number' },
+              totalInputTokens:     { type: 'number' },
+              totalOutputTokens:    { type: 'number' },
+              cacheCreationTokens:  { type: 'number' },
+              cacheReadTokens:      { type: 'number' },
+              estimatedSavings:     { type: 'number' },
+              hitRate:              { type: 'number' },
+            },
+          },
+        },
+      },
+    },
   ],
 }))
 
@@ -151,10 +184,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       case 'optimize_messages':    return handleOptimizeMessages(toolArgs, config)
-      case 'get_cache_stats':     return handleGetCacheStats(tracker)
-      case 'reset_cache_stats':   return handleResetCacheStats(tracker)
+      case 'get_cache_stats':      return handleGetCacheStats(tracker)
+      case 'reset_cache_stats':    return handleResetCacheStats(tracker)
       case 'analyze_cacheability': return handleAnalyzeCacheability(toolArgs, config)
-      default:                    return handleUnknownTool(name)
+      case 'record_usage':         return handleRecordUsage(toolArgs, tracker)
+      default:                     return handleUnknownTool(name)
     }
   } catch (err) {
     return {

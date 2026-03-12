@@ -63,6 +63,31 @@ export function handleAnalyzeCacheability(args: unknown, config: PluginConfig): 
   return { content: [{ type: 'text', text: JSON.stringify(analysis) }] }
 }
 
+export function handleRecordUsage(args: unknown, tracker: TokenTracker): ToolResult {
+  const usage = args as {
+    input_tokens?: number | null
+    output_tokens?: number | null
+    cache_creation_input_tokens?: number | null
+    cache_read_input_tokens?: number | null
+  }
+  if (!usage || typeof usage !== 'object') {
+    return { isError: true, content: [{ type: 'text', text: 'Error: usage must be an object' }] }
+  }
+  tracker.record(usage)
+  const stats = tracker.getStats()
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify({
+          recorded: true,
+          sessionStats: stats,
+        }),
+      },
+    ],
+  }
+}
+
 export function handleUnknownTool(name: string): ToolResult {
   return { isError: true, content: [{ type: 'text', text: `Error: unknown tool: ${name}` }] }
 }

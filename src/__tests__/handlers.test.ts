@@ -4,6 +4,7 @@ import {
   handleGetCacheStats,
   handleResetCacheStats,
   handleAnalyzeCacheability,
+  handleRecordUsage,
   handleUnknownTool,
 } from '../handlers.js'
 import { TokenTracker } from '../token-tracker.js'
@@ -124,6 +125,44 @@ describe('handleAnalyzeCacheability', () => {
     )
     const analysis = JSON.parse(result.content[0].text)
     expect(analysis.cacheableTokens).toBeGreaterThan(0)
+  })
+})
+
+describe('handleRecordUsage', () => {
+  it('records usage and returns session stats', () => {
+    const tracker = new TokenTracker()
+    const result = handleRecordUsage(
+      { input_tokens: 1000, output_tokens: 200, cache_creation_input_tokens: 800, cache_read_input_tokens: 0 },
+      tracker
+    )
+    const parsed = JSON.parse(result.content[0].text)
+    expect(parsed.recorded).toBe(true)
+    expect(parsed.sessionStats.turns).toBe(1)
+    expect(parsed.sessionStats.totalInputTokens).toBe(1000)
+    expect(parsed.sessionStats.cacheCreationTokens).toBe(800)
+  })
+
+  it('accumulates across multiple calls', () => {
+    const tracker = new TokenTracker()
+    handleRecordUsage({ cache_creation_input_tokens: 500 }, tracker)
+    const result = handleRecordUsage({ cache_read_input_tokens: 400 }, tracker)
+    const parsed = JSON.parse(result.content[0].text)
+    expect(parsed.sessionStats.turns).toBe(2)
+    expect(parsed.sessionStats.cacheReadTokens).toBe(400)
+    expect(parsed.sessionStats.estimatedSavings).toBe(360)
+  })
+
+  it('returns isError for non-object input', () => {
+    const tracker = new TokenTracker()
+    const result = handleRecordUsage('bad', tracker)
+    expect(result.isError).toBe(true)
+  })
+
+  it('returns hitRate in session stats', () => {
+    const tracker = new TokenTracker()
+    handleRecordUsage({ cache_creation_input_tokens: 200, cache_read_input_tokens: 800 }, tracker)
+    const parsed = JSON.parse(handleRecordUsage({ cache_read_input_tokens: 0 }, tracker).content[0].text)
+    expect(parsed.sessionStats.hitRate).toBeGreaterThan(0)
   })
 })
 
