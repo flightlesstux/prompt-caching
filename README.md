@@ -65,6 +65,61 @@ The plugin identifies three types of stable content and places breakpoints:
 
 ---
 
+## Proof it works
+
+Run the included live test against the real Anthropic API:
+
+```bash
+pip install anthropic
+export ANTHROPIC_API_KEY=sk-ant-...
+python3 test_live.py
+```
+
+Expected output:
+
+```
+--- Turn 1 ---
+  input_tokens          : 1284
+  cache_creation_tokens : 1257  (billed at 1.25x)
+  cache_read_tokens     : 0  (billed at 0.1x)
+  normal_input_tokens   : 27  (billed at 1.0x)
+  output_tokens         : 4
+  => CACHE WRITTEN — first time, paid 1.25x for 1257 tokens
+
+--- Turn 2 ---
+  input_tokens          : 1284
+  cache_creation_tokens : 0  (billed at 1.25x)
+  cache_read_tokens     : 1257  (billed at 0.1x)
+  normal_input_tokens   : 27  (billed at 1.0x)
+  output_tokens         : 3
+  => CACHE HIT — 88% cheaper on 1257 tokens vs full price
+
+--- Turn 3 ---
+  input_tokens          : 1284
+  cache_creation_tokens : 0  (billed at 1.25x)
+  cache_read_tokens     : 1257  (billed at 0.1x)
+  normal_input_tokens   : 27  (billed at 1.0x)
+  output_tokens         : 4
+  => CACHE HIT — 88% cheaper on 1257 tokens vs full price
+
+============================================================
+PROOF SUMMARY
+============================================================
+  [PASS] Turn 1: cache written (1257 tokens at 1.25x)
+  [PASS] Turn 2: cache hit (1257 tokens at 0.1x, saved 88%)
+  [PASS] Turn 3: cache hit (1257 tokens at 0.1x, saved 88%)
+
+  Total cached tokens read : 2514
+  Average savings (turn 2+): 88%
+
+  Overall: ALL CHECKS PASSED
+============================================================
+```
+
+The `cache_read_input_tokens` field in the Anthropic API response is the ground truth — this is what Anthropic bills at 0.1×. The script exits with code `0` on pass, `1` on failure, so it can be used in CI.
+
+---
+
 ## Benchmarks
 
 Measured on real sessions against the Anthropic API with Sonnet:
