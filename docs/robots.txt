@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://prompt-caching.ai/sitemap.xml

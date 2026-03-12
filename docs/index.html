@@ -11,6 +11,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#1a4d2e" />
   <link rel="canonical" href="https://prompt-caching.ai/" />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -69,7 +70,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Non-render-blocking font load -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
@@ -163,7 +167,7 @@
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header">
-        <h2>How it works</h2>
+        <h2>How prompt-caching works</h2>
         <p class="section-sub">
           Anthropic's caching API stores stable content server-side for 5 minutes. Cache reads cost <strong>0.1×</strong> instead of 1×. This plugin places the breakpoints automatically.
         </p>
@@ -255,7 +259,7 @@
   <section class="section" id="install">
     <div class="container">
       <div class="section-header">
-        <h2>Installation</h2>
+        <h2>Install prompt-caching</h2>
         <p class="section-sub">One command for Claude Code. For Cursor, Windsurf, ChatGPT, Perplexity, Zed, Continue.dev, and any other MCP-compatible client — use the npm install path below.</p>
       </div>
 
@@ -308,7 +312,7 @@
   <section class="section section-cta">
     <div class="container cta-inner">
       <p class="cta-eyebrow">Open source · MIT · Zero lock-in</p>
-      <h2>Ready to stop paying<br/>for the same tokens twice?</h2>
+      <h2>Ready to cut your Claude Code<br/>token costs by 90%?</h2>
       <div class="hero-actions">
         <a href="https://github.com/flightlesstux/prompt-caching" target="_blank" rel="noopener noreferrer" class="btn-primary">View on GitHub</a>
         <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="btn-ghost">Contribute →</a>
