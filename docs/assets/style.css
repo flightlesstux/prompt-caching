@@ -20,8 +20,8 @@
   --sage2:       #e8f5d8;
   --code-bg:     #f0f4e8;
   --radius:      14px;
-  --font:        'DM Sans', system-ui, sans-serif;
-  --display:     'Instrument Serif', Georgia, serif;
+  --font:        'Plus Jakarta Sans', system-ui, sans-serif;
+  --display:     'Plus Jakarta Sans', system-ui, sans-serif;
   --mono:        'DM Mono', 'Fira Code', monospace;
   --shadow-sm:   0 1px 4px rgba(26,77,46,0.08);
   --shadow-md:   0 4px 24px rgba(26,77,46,0.10);
@@ -175,15 +175,15 @@ a:hover { text-decoration: underline; }
 
 .hero h1 {
   font-family: var(--display);
-  font-size: clamp(46px, 5.5vw, 76px);
-  font-weight: 400;
-  line-height: 1.04;
-  letter-spacing: -1.5px;
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -2px;
   margin-bottom: 28px;
   color: var(--text);
 }
 .hero h1 em {
-  font-style: italic;
+  font-style: normal;
   color: var(--forest2);
 }
 
@@ -311,9 +311,9 @@ code {
 .savings-num {
   font-family: var(--display);
   font-size: 40px;
+  font-weight: 800;
   color: var(--lime-light);
   line-height: 1;
-  font-style: italic;
 }
 .savings-text {
   font-size: 12px;
@@ -343,9 +343,8 @@ code {
 .stat-num {
   display: block;
   font-family: var(--display);
-  font-size: 52px;
-  font-weight: 400;
-  font-style: italic;
+  font-size: 48px;
+  font-weight: 800;
   color: var(--forest);
   line-height: 1;
   margin-bottom: 10px;
@@ -409,14 +408,14 @@ code {
 
 h2 {
   font-family: var(--display);
-  font-size: clamp(30px, 4vw, 50px);
-  font-weight: 400;
-  letter-spacing: -0.5px;
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -1px;
   margin-bottom: 20px;
-  line-height: 1.1;
+  line-height: 1.15;
   color: var(--text);
 }
-h2 em { font-style: italic; color: var(--forest2); }
+h2 em { font-style: normal; color: var(--forest2); }
 .section-sub {
   color: var(--text-muted);
   font-size: 17px;
@@ -459,9 +458,8 @@ h2 em { font-style: italic; color: var(--forest2); }
 .mode-card:hover::after { transform: scaleX(1); }
 .mode-icon { font-size: 28px; margin-bottom: 20px; }
 .mode-card h3 {
-  font-family: var(--display);
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 17px;
+  font-weight: 600;
   margin-bottom: 12px;
   color: var(--text);
 }
@@ -657,9 +655,8 @@ h2 em { font-style: italic; color: var(--forest2); }
 .step-content { padding-bottom: 52px; flex: 1; }
 .install-step:last-child .step-content { padding-bottom: 0; }
 .step-content h3 {
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 14px;
   margin-top: 8px;
   color: var(--text);
