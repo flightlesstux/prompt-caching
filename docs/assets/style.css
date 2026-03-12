@@ -291,7 +291,11 @@ code {
   padding: 4px 14px;
   border-radius: 999px;
   letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: inline-block;
 }
+.code-badge:hover { background: var(--bg4); text-decoration: none; }
 
 /* floating savings pill */
 .savings-pill {
