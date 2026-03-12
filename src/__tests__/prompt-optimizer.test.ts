@@ -95,4 +95,63 @@ describe('optimizeMessages', () => {
     optimizeMessages([], undefined, tools, config)
     expect(JSON.stringify(tools)).toBe(original)
   })
+
+  it('maxCacheBreakpoints 0 means nothing is ever cached', () => {
+    const messages: MessageParam[] = [{ role: 'user', content: longText }]
+    const result = optimizeMessages(messages, longText, undefined, { ...config, maxCacheBreakpoints: 0 })
+    expect(result.breakpointsAdded).toBe(0)
+    expect(hasCacheControl(result.optimizedMessages)).toBe(false)
+    expect(hasCacheControl(result.optimizedSystem)).toBe(false)
+  })
+
+  it('handles empty messages array without error', () => {
+    const result = optimizeMessages([], longText, undefined, config)
+    expect(result.optimizedMessages).toEqual([])
+    expect(result.breakpointsAdded).toBe(1) // system still cached
+  })
+
+  it('only the last tool gets cache_control with multiple tools', () => {
+    const tools = [
+      { name: 'a', description: longText, input_schema: {} },
+      { name: 'b', description: longText, input_schema: {} },
+      { name: 'c', description: longText, input_schema: {} },
+    ]
+    const result = optimizeMessages([], undefined, tools, config)
+    const optimized = result.optimizedTools!
+    expect(optimized[0].cache_control).toBeUndefined()
+    expect(optimized[1].cache_control).toBeUndefined()
+    expect(optimized[2].cache_control).toEqual({ type: 'ephemeral' })
+  })
+
+  it('skips tools when cacheToolDefinitions is false', () => {
+    const tools = [{ name: 'a', description: longText, input_schema: {} }]
+    const result = optimizeMessages([], undefined, tools, { ...config, cacheToolDefinitions: false })
+    expect(result.optimizedTools![0].cache_control).toBeUndefined()
+    expect(result.breakpointsAdded).toBe(0)
+  })
+
+  it('only user messages get cached, not assistant', () => {
+    const messages: MessageParam[] = [
+      { role: 'user', content: longText },
+      { role: 'assistant', content: longText },
+      { role: 'user', content: longText },
+    ]
+    const result = optimizeMessages(messages, undefined, undefined, { ...config, maxCacheBreakpoints: 4 })
+    expect(hasCacheControl(result.optimizedMessages[1].content)).toBe(false)
+    expect(hasCacheControl(result.optimizedMessages[0].content)).toBe(true)
+    expect(hasCacheControl(result.optimizedMessages[2].content)).toBe(true)
+  })
+
+  it('returns analysis with correct segment count', () => {
+    const messages: MessageParam[] = [{ role: 'user', content: longText }]
+    const result = optimizeMessages(messages, longText, undefined, config)
+    expect(result.analysis.segments.length).toBeGreaterThan(0)
+    expect(result.analysis.cacheableTokens).toBeGreaterThan(0)
+  })
+
+  it('does not add cache_control to empty content array', () => {
+    const messages: MessageParam[] = [{ role: 'user', content: [] }]
+    const result = optimizeMessages(messages, undefined, undefined, config)
+    expect(result.optimizedMessages[0].content).toEqual([])
+  })
 })

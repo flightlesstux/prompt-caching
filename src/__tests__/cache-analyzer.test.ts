@@ -101,4 +101,62 @@ describe('analyzeMessages', () => {
     const result = analyzeMessages([msg], undefined, undefined, config)
     expect(result.segments[0].cacheable).toBe(true)
   })
+
+  it('returns no segments for empty messages with no system or tools', () => {
+    const result = analyzeMessages([], undefined, undefined, config)
+    expect(result.segments).toHaveLength(0)
+    expect(result.totalEstimatedTokens).toBe(0)
+    expect(result.cacheableTokens).toBe(0)
+    expect(result.recommendedBreakpoints).toBe(0)
+  })
+
+  it('recommendedBreakpoints is 0 when maxCacheBreakpoints is 0', () => {
+    const manyLong: MessageParam[] = Array.from({ length: 5 }, () => ({ role: 'user' as const, content: longText }))
+    const result = analyzeMessages(manyLong, longText, undefined, { ...config, maxCacheBreakpoints: 0 })
+    expect(result.recommendedBreakpoints).toBe(0)
+  })
+
+  it('ignores empty tools array', () => {
+    const result = analyzeMessages([], undefined, [], config)
+    expect(result.segments.filter(s => s.kind === 'tools')).toHaveLength(0)
+  })
+
+  it('cacheableTokens is 0 when nothing meets the threshold', () => {
+    const result = analyzeMessages(
+      [{ role: 'user', content: 'hi' }],
+      'short',
+      undefined,
+      { ...config, minTokensToCache: 99999 }
+    )
+    expect(result.cacheableTokens).toBe(0)
+  })
+
+  it('extracts text from tool_result content blocks', () => {
+    const msg: MessageParam = {
+      role: 'user',
+      content: [{ type: 'tool_result', content: [{ type: 'text', text: 'x'.repeat(200) }] }],
+    }
+    const result = analyzeMessages([msg], undefined, undefined, config)
+    expect(result.segments[0].estimatedTokens).toBeGreaterThan(0)
+  })
+
+  it('system as TextBlockParam array is supported', () => {
+    const system = [{ type: 'text' as const, text: longText }]
+    const result = analyzeMessages([], system, undefined, config)
+    expect(result.segments[0].kind).toBe('system')
+    expect(result.segments[0].cacheable).toBe(true)
+  })
+
+  it('messageIndex is set correctly on each segment', () => {
+    const messages: MessageParam[] = [
+      { role: 'user', content: longText },
+      { role: 'assistant', content: 'ok' },
+      { role: 'user', content: longText },
+    ]
+    const result = analyzeMessages(messages, undefined, undefined, config)
+    const msgSegs = result.segments.filter(s => s.messageIndex !== undefined)
+    expect(msgSegs[0].messageIndex).toBe(0)
+    expect(msgSegs[1].messageIndex).toBe(1)
+    expect(msgSegs[2].messageIndex).toBe(2)
+  })
 })

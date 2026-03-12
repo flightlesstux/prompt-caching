@@ -69,4 +69,38 @@ describe('TokenTracker', () => {
     expect(stats.totalInputTokens).toBe(0)
     expect(stats.hitRate).toBe(0)
   })
+
+  it('hitRate is 0 when only creation tokens exist (no reads yet)', () => {
+    tracker.record({ cache_creation_input_tokens: 500, cache_read_input_tokens: 0 })
+    expect(tracker.getStats().hitRate).toBe(0)
+  })
+
+  it('accumulates correctly after reset', () => {
+    tracker.record({ input_tokens: 1000, cache_creation_input_tokens: 800 })
+    tracker.reset()
+    tracker.record({ input_tokens: 200, cache_read_input_tokens: 150 })
+    const stats = tracker.getStats()
+    expect(stats.turns).toBe(1)
+    expect(stats.totalInputTokens).toBe(200)
+    expect(stats.cacheReadTokens).toBe(150)
+    expect(stats.cacheCreationTokens).toBe(0)
+  })
+
+  it('estimatedSavings is 0 when no cache reads', () => {
+    tracker.record({ input_tokens: 500, cache_creation_input_tokens: 400 })
+    expect(tracker.getStats().estimatedSavings).toBe(0)
+  })
+
+  it('handles completely empty usage object', () => {
+    tracker.record({})
+    const stats = tracker.getStats()
+    expect(stats.turns).toBe(1)
+    expect(stats.totalInputTokens).toBe(0)
+    expect(stats.cacheCreationTokens).toBe(0)
+  })
+
+  it('hitRate rounds to full hit when all tokens are reads', () => {
+    tracker.record({ cache_creation_input_tokens: 0, cache_read_input_tokens: 1000 })
+    expect(tracker.getStats().hitRate).toBe(1)
+  })
 })
