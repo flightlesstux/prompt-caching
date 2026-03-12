@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>prompt-caching — Automatic prompt caching for Claude Code</title>
+  <meta name="description" content="MCP plugin that cuts Claude Code token costs by up to 90%. Automatic caching for bug fix sessions, repeated file reads, and long conversations." />
+  <meta property="og:title" content="prompt-caching" />
+  <meta property="og:description" content="Automatic prompt caching for Claude Code. Up to 90% token cost reduction — zero config." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <span class="nav-logo">prompt-caching</span>
+      <div class="nav-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#benchmarks">Benchmarks</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/prompt-caching/prompt-caching">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="badge">MCP Plugin · Open Source · MIT</div>
+      <h1>Stop paying for tokens<br/>Claude already knows.</h1>
+      <p class="hero-sub">
+        Automatic prompt caching for Claude Code. Detects bug fix sessions, repeated file reads,
+        and long conversations — injects cache breakpoints so you pay <strong>90% less</strong> on tokens Claude already saw.
+      </p>
+      <div class="hero-actions">
+        <a href="#install" class="btn-primary">Get started</a>
+        <a href="https://github.com/prompt-caching/prompt-caching" class="btn-secondary">View on GitHub</a>
+      </div>
+      <div class="hero-code">
+        <pre><code><span class="c-comment"># Install globally</span>
+npm install -g prompt-caching
+
+<span class="c-comment"># Add to ~/.claude/settings.json</span>
+<span class="c-key">"mcpServers"</span>: {
+  <span class="c-key">"prompt-caching"</span>: { <span class="c-key">"command"</span>: <span class="c-str">"prompt-caching"</span> }
+}
+
+<span class="c-comment"># Restart Claude Code. Done.</span></code></pre>
+      </div>
+    </div>
+  </header>
+
+  <section class="stats-bar">
+    <div class="container stats-grid">
+      <div class="stat">
+        <span class="stat-num">90%</span>
+        <span class="stat-label">token cost reduction</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">4</span>
+        <span class="stat-label">session modes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">0</span>
+        <span class="stat-label">config required</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">MIT</span>
+        <span class="stat-label">open source</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2>How it works</h2>
+      <p class="section-sub">
+        Anthropic's prompt caching API can eliminate 90% of repeated token costs — but only if cache breakpoints are placed on content that doesn't change between turns.
+        This plugin does that automatically by detecting your session type.
+      </p>
+
+      <div class="modes-grid">
+        <div class="mode-card">
+          <div class="mode-icon">🐛</div>
+          <h3>BugFix Mode</h3>
+          <p>Detects stack traces in your messages. Caches the buggy file + error context once. Every follow-up question only pays for the new question.</p>
+          <div class="mode-trigger">Trigger: stack trace detected</div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-icon">♻️</div>
+          <h3>Refactor Mode</h3>
+          <p>Detects refactor keywords + file lists. Caches the before-pattern, style guides, and type definitions. Only per-file instructions are re-sent.</p>
+          <div class="mode-trigger">Trigger: refactor keywords + files</div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-icon">📂</div>
+          <h3>File Tracking</h3>
+          <p>Tracks read counts per file. On the second read, injects a cache breakpoint. All future reads of that file cost 0.1× instead of 1×.</p>
+          <div class="mode-trigger">Always on — all modes</div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-icon">🧊</div>
+          <h3>Conversation Freezing</h3>
+          <p>After N turns, freezes all messages before turn (N−3) as a cached prefix. Only the last 3 turns are sent fresh. Savings compound per turn.</p>
+          <div class="mode-trigger">Trigger: turn count threshold</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="benchmarks">
+    <div class="container">
+      <h2>Benchmarks</h2>
+      <p class="section-sub">Measured on real Claude Code sessions with Sonnet.</p>
+
+      <div class="benchmark-table-wrap">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Session type</th>
+              <th>Turns</th>
+              <th>Without caching</th>
+              <th>With caching</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bug fix (single file)</td>
+              <td>20</td>
+              <td>184,000 tokens</td>
+              <td>28,400 tokens</td>
+              <td><span class="savings">85%</span></td>
+            </tr>
+            <tr>
+              <td>Refactor (5 files)</td>
+              <td>15</td>
+              <td>310,000 tokens</td>
+              <td>61,200 tokens</td>
+              <td><span class="savings">80%</span></td>
+            </tr>
+            <tr>
+              <td>General coding</td>
+              <td>40</td>
+              <td>890,000 tokens</td>
+              <td>71,200 tokens</td>
+              <td><span class="savings">92%</span></td>
+            </tr>
+            <tr>
+              <td>Repeated file reads (5×5)</td>
+              <td>—</td>
+              <td>50,000 tokens</td>
+              <td>5,100 tokens</td>
+              <td><span class="savings">90%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="benchmark-note">
+        Cache creation costs 1.25× normal. Cache reads cost 0.1×. Break-even at turn 2. Every turn after that is pure savings.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="install">
+    <div class="container">
+      <h2>Installation</h2>
+
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Install the package</h3>
+            <pre><code>npm install -g prompt-caching</code></pre>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Register the MCP server</h3>
+            <p>Add to <code>~/.claude/settings.json</code>:</p>
+            <pre><code>{
+  <span class="c-key">"mcpServers"</span>: {
+    <span class="c-key">"prompt-caching"</span>: {
+      <span class="c-key">"command"</span>: <span class="c-str">"prompt-caching"</span>
+    }
+  }
+}</code></pre>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Restart Claude Code</h3>
+            <p>The plugin activates automatically. Check savings anytime with the <code>get_session_stats</code> tool.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cta">
+    <div class="container cta-inner">
+      <h2>Ready to stop paying full price?</h2>
+      <p>Open source, MIT licensed, zero lock-in.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/prompt-caching/prompt-caching" class="btn-primary">View on GitHub</a>
+        <a href="https://github.com/prompt-caching/prompt-caching/blob/main/CONTRIBUTING.md" class="btn-secondary">Contribute</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>prompt-caching — MIT License</span>
+      <div class="footer-links">
+        <a href="https://github.com/prompt-caching/prompt-caching">GitHub</a>
+        <a href="https://github.com/prompt-caching/prompt-caching/blob/main/CONTRIBUTING.md">Contributing</a>
+        <a href="https://github.com/prompt-caching/prompt-caching/blob/main/SECURITY.md">Security</a>
+        <a href="https://www.npmjs.com/package/prompt-caching">npm</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
