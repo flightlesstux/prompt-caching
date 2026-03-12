@@ -3,11 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>prompt-caching — Automatic prompt caching for Claude Code</title>
-  <meta name="description" content="MCP plugin that cuts Claude Code token costs by up to 90%. Automatic caching for bug fix sessions, repeated file reads, and long conversations." />
-  <meta property="og:title" content="prompt-caching" />
-  <meta property="og:description" content="Automatic prompt caching for Claude Code. Up to 90% token cost reduction — zero config." />
+
+  <!-- Primary SEO -->
+  <title>prompt-caching — Cut Claude Code Token Costs by 90% Automatically</title>
+  <meta name="description" content="Open source MCP plugin that automatically injects prompt cache breakpoints into Claude Code sessions. Cuts Anthropic API token costs by up to 90% with zero configuration. Works with Cursor, Windsurf, ChatGPT, Perplexity and any MCP client." />
+  <meta name="author" content="Ercan Ermis" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#1a4d2e" />
+  <link rel="canonical" href="https://prompt-caching.ai/" />
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="prompt-caching" />
+  <meta property="og:title" content="prompt-caching — Cut Claude Code Token Costs by 90% Automatically" />
+  <meta property="og:description" content="Open source MCP plugin that automatically injects prompt cache breakpoints into Claude Code sessions. Up to 90% token cost reduction — zero config." />
+  <meta property="og:url" content="https://prompt-caching.ai/" />
+  <meta property="og:image" content="https://prompt-caching.ai/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="prompt-caching — Cut Claude Code Token Costs by 90%" />
+  <meta name="twitter:description" content="Open source MCP plugin that automatically injects prompt cache breakpoints. Up to 90% token cost reduction — zero config." />
+  <meta name="twitter:image" content="https://prompt-caching.ai/assets/og-image.png" />
+  <meta name="twitter:creator" content="@ercanermis" />
+
+  <!-- Keywords -->
+  <meta name="keywords" content="prompt caching, Claude Code, Anthropic API, MCP plugin, token cost reduction, AI cost optimization, Claude, Cursor, Windsurf, ChatGPT, Perplexity" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "prompt-caching",
+    "description": "Open source MCP plugin that automatically injects prompt cache breakpoints into Claude Code sessions, cutting Anthropic API token costs by up to 90%.",
+    "url": "https://prompt-caching.ai",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Ercan Ermis",
+      "url": "https://linkedin.com/in/ercanermis"
+    },
+    "license": "https://opensource.org/licenses/MIT",
+    "codeRepository": "https://github.com/flightlesstux/prompt-caching"
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -33,11 +83,12 @@
         <a href="#how-it-works">How it works</a>
         <a href="#benchmarks">Benchmarks</a>
         <a href="#install">Install</a>
-        <a href="https://github.com/flightlesstux/prompt-caching">GitHub</a>
+        <a href="https://github.com/flightlesstux/prompt-caching" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
   </nav>
 
+  <main>
   <header class="hero">
     <div class="hero-blob hero-blob--1"></div>
     <div class="hero-blob hero-blob--2"></div>
@@ -52,7 +103,7 @@
         </p>
         <div class="hero-actions animate-4">
           <a href="#install" class="btn-primary">Get started</a>
-          <a href="https://github.com/flightlesstux/prompt-caching" class="btn-ghost">View on GitHub →</a>
+          <a href="https://github.com/flightlesstux/prompt-caching" target="_blank" rel="noopener noreferrer" class="btn-ghost">View on GitHub →</a>
         </div>
       </div>
       <div class="hero-right animate-5">
@@ -250,11 +301,13 @@
       <p class="cta-eyebrow">Open source · MIT · Zero lock-in</p>
       <h2>Ready to stop paying<br/>for the same tokens twice?</h2>
       <div class="hero-actions">
-        <a href="https://github.com/flightlesstux/prompt-caching" class="btn-primary">View on GitHub</a>
-        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" class="btn-ghost">Contribute →</a>
+        <a href="https://github.com/flightlesstux/prompt-caching" target="_blank" rel="noopener noreferrer" class="btn-primary">View on GitHub</a>
+        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="btn-ghost">Contribute →</a>
       </div>
     </div>
   </section>
+
+  </main>
 
   <footer class="footer">
     <div class="container footer-inner">
@@ -263,10 +316,10 @@
         <span class="footer-author">Made with ❣️ in the Netherlands 🇳🇱 by <a href="https://linkedin.com/in/ercanermis" target="_blank" rel="noopener">Ercan Ermis</a> 👨‍💻</span>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/flightlesstux/prompt-caching">GitHub</a>
-        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md">Contributing</a>
-        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/SECURITY.md">Security</a>
-        <a href="https://www.npmjs.com/package/prompt-caching">npm</a>
+        <a href="https://github.com/flightlesstux/prompt-caching" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a>
+        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a>
+        <a href="https://www.npmjs.com/package/prompt-caching" target="_blank" rel="noopener noreferrer">npm</a>
       </div>
     </div>
   </footer>
