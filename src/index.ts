@@ -6,9 +6,15 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import { getConfigPath } from './utils/paths.js'
-import { loadConfig, analyzeMessages, type MessageParam, type SystemPrompt, type ToolDef } from './cache-analyzer.js'
-import { optimizeMessages } from './prompt-optimizer.js'
+import { loadConfig } from './cache-analyzer.js'
 import { TokenTracker } from './token-tracker.js'
+import {
+  handleOptimizeMessages,
+  handleGetCacheStats,
+  handleResetCacheStats,
+  handleAnalyzeCacheability,
+  handleUnknownTool,
+} from './handlers.js'
 
 const args = process.argv.slice(2)
 if (args.includes('--version')) {
@@ -142,82 +148,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: toolArgs } = request.params
-
   try {
     switch (name) {
-      case 'optimize_messages': {
-        const { messages, system, tools } = toolArgs as {
-          messages: MessageParam[]
-          system?: SystemPrompt
-          tools?: ToolDef[]
-        }
-        if (!Array.isArray(messages)) {
-          return {
-            isError: true,
-            content: [{ type: 'text', text: 'Error: messages must be an array' }],
-          }
-        }
-        const result = optimizeMessages(messages, system, tools, config)
-        return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify({
-                optimizedMessages: result.optimizedMessages,
-                optimizedSystem: result.optimizedSystem,
-                optimizedTools: result.optimizedTools,
-                breakpointsAdded: result.breakpointsAdded,
-                cacheableTokens: result.analysis.cacheableTokens,
-                segments: result.analysis.segments,
-              }),
-            },
-          ],
-        }
-      }
-
-      case 'get_cache_stats': {
-        return {
-          content: [{ type: 'text', text: JSON.stringify(tracker.getStats()) }],
-        }
-      }
-
-      case 'reset_cache_stats': {
-        tracker.reset()
-        return {
-          content: [{ type: 'text', text: JSON.stringify({ reset: true }) }],
-        }
-      }
-
-      case 'analyze_cacheability': {
-        const { messages, system, tools } = toolArgs as {
-          messages: MessageParam[]
-          system?: SystemPrompt
-          tools?: ToolDef[]
-        }
-        if (!Array.isArray(messages)) {
-          return {
-            isError: true,
-            content: [{ type: 'text', text: 'Error: messages must be an array' }],
-          }
-        }
-        const analysis = analyzeMessages(messages, system, tools, config)
-        return {
-          content: [{ type: 'text', text: JSON.stringify(analysis) }],
-        }
-      }
-
-      default:
-        return {
-          isError: true,
-          content: [{ type: 'text', text: `Error: unknown tool: ${name}` }],
-        }
+      case 'optimize_messages':    return handleOptimizeMessages(toolArgs, config)
+      case 'get_cache_stats':     return handleGetCacheStats(tracker)
+      case 'reset_cache_stats':   return handleResetCacheStats(tracker)
+      case 'analyze_cacheability': return handleAnalyzeCacheability(toolArgs, config)
+      default:                    return handleUnknownTool(name)
     }
   } catch (err) {
     return {
       isError: true,
-      content: [
-        { type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` },
-      ],
+      content: [{ type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` }],
     }
   }
 })
