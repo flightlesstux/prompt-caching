@@ -82,7 +82,7 @@ jobs:
         shell: pwsh
 
       - name: Verify config file path resolves correctly
-        run: node -e "const p = require('./dist/utils/paths'); console.log(p.getConfigPath()); process.exit(0);"
+        run: node --input-type=module -e "import { getConfigPath } from './dist/utils/paths.js'; console.log(getConfigPath()); process.exit(0);"
 
   benchmark:
     name: Cache Hit Rate Benchmarks
