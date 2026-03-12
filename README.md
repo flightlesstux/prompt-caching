@@ -1,6 +1,6 @@
 # prompt-caching
 
-> An open MCP server that automatically injects prompt cache breakpoints into any AI workflow using the Anthropic API — cutting token costs by up to 90% on repeated content with zero configuration.
+> A Claude-first MCP plugin that automatically injects prompt cache breakpoints into your AI sessions — cutting Anthropic API token costs by up to 90% on repeated content with zero configuration.
 
 [![CI](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml/badge.svg)](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/prompt-caching)](https://www.npmjs.com/package/prompt-caching)
@@ -12,18 +12,21 @@
 
 ## Who is this for?
 
-Any developer making Anthropic API calls — regardless of which AI client or coding tool they use.
+This plugin is built for **Claude and the Anthropic API first**. The prompt caching feature (`cache_control`) is an Anthropic-specific capability — that's where you get the full 90% savings.
 
-| Client | MCP support | Caching benefit |
+Because it's delivered as an MCP server, other MCP-compatible clients can also connect to it. We can't guarantee full compatibility or caching benefits outside the Anthropic ecosystem, but it works anywhere MCP is supported.
+
+| Client | Works with this plugin | Full caching benefit |
 |---|---|---|
-| Claude Code | ✅ Native | ✅ Full |
-| Cursor | ✅ Native | ✅ Full |
-| Windsurf | ✅ Native | ✅ Full |
-| Zed | ✅ Native | ✅ Full |
-| Continue.dev | ✅ Native | ✅ Full |
-| Any MCP-compatible client | ✅ | ✅ Full |
+| **Claude Code** | ✅ | ✅ Built for this |
+| **Cursor** | ✅ | ✅ When calling Anthropic API |
+| **Windsurf** | ✅ | ✅ When calling Anthropic API |
+| **Zed** | ✅ | ✅ When calling Anthropic API |
+| **Continue.dev** | ✅ | ✅ When calling Anthropic API |
+| Other MCP clients | ⚠️ Best effort | ⚠️ Anthropic API only |
+| Non-Anthropic models | ⚠️ MCP tools available | ❌ No caching effect |
 
-> **How caching works**: Anthropic's prompt caching API stores stable content (system prompts, tool definitions, repeated file reads) server-side for 5 minutes. Cache reads cost **0.1×** instead of **1×** — a 90% reduction per cached token. This plugin places the cache breakpoints automatically so you don't have to.
+> **How caching works**: Anthropic's prompt caching API stores stable content (system prompts, tool definitions, repeated file reads) server-side for 5 minutes. Cache reads cost **0.1×** instead of **1×** — a 90% reduction per cached token. This plugin places the `cache_control` breakpoints automatically so you don't have to.
 
 ---
 
