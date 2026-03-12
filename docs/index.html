@@ -10,14 +10,25 @@
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
 
+  <!-- grain overlay -->
+  <svg class="grain" xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+    <filter id="grain-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="overlay" result="blend"/>
+      <feComposite in="blend" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </svg>
+  <div class="grain-overlay"></div>
+
   <nav class="nav">
     <div class="nav-inner">
-      <span class="nav-logo">prompt-caching</span>
+      <span class="nav-logo">prompt<span class="logo-sep">—</span>caching</span>
       <div class="nav-links">
         <a href="#how-it-works">How it works</a>
         <a href="#benchmarks">Benchmarks</a>
@@ -29,27 +40,40 @@
 
   <header class="hero">
     <div class="hero-orb"></div>
-    <div class="container">
-      <div class="badge">MCP Plugin · Open Source · MIT</div>
-      <h1>Stop paying for tokens<br/>Claude already knows.</h1>
-      <p class="hero-sub">
-        Automatic prompt caching for Claude Code. Detects bug fix sessions, repeated file reads,
-        and long conversations — injects cache breakpoints so you pay <strong>90% less</strong> on tokens Claude already saw.
-      </p>
-      <div class="hero-actions">
-        <a href="#install" class="btn-primary">Get started</a>
-        <a href="https://github.com/flightlesstux/prompt-caching" class="btn-secondary">View on GitHub</a>
+    <div class="hero-orb hero-orb--2"></div>
+    <div class="container hero-layout">
+      <div class="hero-left">
+        <div class="badge animate-1">MCP Plugin · Open Source · MIT</div>
+        <h1 class="animate-2">Stop paying<br/><em>full price</em><br/>twice.</h1>
+        <p class="hero-sub animate-3">
+          Automatic prompt caching for Claude Code. Detects stable content — system prompts, tool definitions, file reads — and marks them so you pay <strong>90% less</strong> on every repeated turn.
+        </p>
+        <div class="hero-actions animate-4">
+          <a href="#install" class="btn-primary">Get started</a>
+          <a href="https://github.com/flightlesstux/prompt-caching" class="btn-ghost">View on GitHub →</a>
+        </div>
       </div>
-      <div class="hero-code">
-        <pre><code><span class="c-comment"># Install globally</span>
-npm install -g prompt-caching
-
-<span class="c-comment"># Add to ~/.claude/settings.json</span>
-<span class="c-key">"mcpServers"</span>: {
-  <span class="c-key">"prompt-caching"</span>: { <span class="c-key">"command"</span>: <span class="c-str">"prompt-caching"</span> }
-}
-
-<span class="c-comment"># Restart Claude Code. Done.</span></code></pre>
+      <div class="hero-right animate-5">
+        <div class="hero-code">
+          <div class="code-titlebar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <span class="code-title">~/.claude/settings.json</span>
+          </div>
+          <pre><code><span class="c-brace">{</span>
+  <span class="c-key">"mcpServers"</span><span class="c-colon">:</span> <span class="c-brace">{</span>
+    <span class="c-key">"prompt-caching"</span><span class="c-colon">:</span> <span class="c-brace">{</span>
+      <span class="c-key">"command"</span><span class="c-colon">:</span> <span class="c-str">"prompt-caching"</span>
+    <span class="c-brace">}</span>
+  <span class="c-brace">}</span>
+<span class="c-brace">}</span></code></pre>
+          <div class="code-footer">
+            <span class="code-badge">npm install -g prompt-caching</span>
+          </div>
+        </div>
+        <div class="savings-pill animate-6">
+          <span class="savings-num">90%</span>
+          <span class="savings-text">average token<br/>cost reduction</span>
+        </div>
       </div>
     </div>
   </header>
@@ -57,7 +81,7 @@ npm install -g prompt-caching
   <section class="stats-bar">
     <div class="container stats-grid">
       <div class="stat">
-        <span class="stat-num">90%</span>
+        <span class="stat-num">90<span class="stat-unit">%</span></span>
         <span class="stat-label">token cost reduction</span>
       </div>
       <div class="stat">
@@ -77,36 +101,37 @@ npm install -g prompt-caching
 
   <section class="section" id="how-it-works">
     <div class="container">
-      <h2>How it works</h2>
-      <p class="section-sub">
-        Anthropic's prompt caching API can eliminate 90% of repeated token costs — but only if cache breakpoints are placed on content that doesn't change between turns.
-        This plugin does that automatically by detecting your session type.
-      </p>
+      <div class="section-header">
+        <h2>How it works</h2>
+        <p class="section-sub">
+          Anthropic's caching API stores stable content server-side for 5 minutes. Cache reads cost <strong>0.1×</strong> instead of 1×. This plugin places the breakpoints automatically.
+        </p>
+      </div>
 
       <div class="modes-grid">
         <div class="mode-card">
           <div class="mode-icon">🐛</div>
           <h3>BugFix Mode</h3>
-          <p>Detects stack traces in your messages. Caches the buggy file + error context once. Every follow-up question only pays for the new question.</p>
-          <div class="mode-trigger">Trigger: stack trace detected</div>
+          <p>Detects stack traces in your messages. Caches the buggy file + error context once. Every follow-up only pays for the new question.</p>
+          <div class="mode-trigger">stack trace detected</div>
         </div>
         <div class="mode-card">
           <div class="mode-icon">♻️</div>
           <h3>Refactor Mode</h3>
-          <p>Detects refactor keywords + file lists. Caches the before-pattern, style guides, and type definitions. Only per-file instructions are re-sent.</p>
-          <div class="mode-trigger">Trigger: refactor keywords + files</div>
+          <p>Detects refactor keywords + file lists. Caches the before-pattern, style guides, and type definitions. Only per-file instructions re-sent.</p>
+          <div class="mode-trigger">refactor keywords + files</div>
         </div>
         <div class="mode-card">
           <div class="mode-icon">📂</div>
           <h3>File Tracking</h3>
-          <p>Tracks read counts per file. On the second read, injects a cache breakpoint. All future reads of that file cost 0.1× instead of 1×.</p>
-          <div class="mode-trigger">Always on — all modes</div>
+          <p>Tracks read counts per file. On the second read, injects a cache breakpoint. All future reads cost 0.1× instead of 1×.</p>
+          <div class="mode-trigger">always on — all modes</div>
         </div>
         <div class="mode-card">
           <div class="mode-icon">🧊</div>
-          <h3>Conversation Freezing</h3>
-          <p>After N turns, freezes all messages before turn (N−3) as a cached prefix. Only the last 3 turns are sent fresh. Savings compound per turn.</p>
-          <div class="mode-trigger">Trigger: turn count threshold</div>
+          <h3>Conversation Freeze</h3>
+          <p>After N turns, freezes all messages before turn (N−3) as a cached prefix. Only the last 3 turns sent fresh. Savings compound.</p>
+          <div class="mode-trigger">turn count threshold</div>
         </div>
       </div>
     </div>
@@ -114,8 +139,10 @@ npm install -g prompt-caching
 
   <section class="section section-dark" id="benchmarks">
     <div class="container">
-      <h2>Benchmarks</h2>
-      <p class="section-sub">Measured on real Claude Code sessions with Sonnet.</p>
+      <div class="section-header">
+        <h2>Benchmarks</h2>
+        <p class="section-sub">Measured on real Claude Code sessions with Sonnet. Break-even at turn 2.</p>
+      </div>
 
       <div class="benchmark-table-wrap">
         <table class="benchmark-table">
@@ -132,55 +159,54 @@ npm install -g prompt-caching
             <tr>
               <td>Bug fix (single file)</td>
               <td>20</td>
-              <td>184,000 tokens</td>
+              <td class="dim">184,000 tokens</td>
               <td>28,400 tokens</td>
               <td><span class="savings">85%</span></td>
             </tr>
             <tr>
               <td>Refactor (5 files)</td>
               <td>15</td>
-              <td>310,000 tokens</td>
+              <td class="dim">310,000 tokens</td>
               <td>61,200 tokens</td>
               <td><span class="savings">80%</span></td>
             </tr>
             <tr>
               <td>General coding</td>
               <td>40</td>
-              <td>890,000 tokens</td>
+              <td class="dim">890,000 tokens</td>
               <td>71,200 tokens</td>
               <td><span class="savings">92%</span></td>
             </tr>
             <tr>
               <td>Repeated file reads (5×5)</td>
               <td>—</td>
-              <td>50,000 tokens</td>
+              <td class="dim">50,000 tokens</td>
               <td>5,100 tokens</td>
               <td><span class="savings">90%</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <div class="benchmark-note">
-        Cache creation costs 1.25× normal. Cache reads cost 0.1×. Break-even at turn 2. Every turn after that is pure savings.
-      </div>
+      <div class="benchmark-note">Cache creation costs 1.25× normal. Cache reads cost 0.1×. Every turn after the first is pure savings.</div>
     </div>
   </section>
 
   <section class="section" id="install">
     <div class="container">
-      <h2>Installation</h2>
+      <div class="section-header">
+        <h2>Installation</h2>
+      </div>
 
       <div class="install-steps">
         <div class="install-step">
-          <div class="step-num">1</div>
+          <div class="step-track"><div class="step-num">1</div><div class="step-line"></div></div>
           <div class="step-content">
             <h3>Install the package</h3>
             <pre><code>npm install -g prompt-caching</code></pre>
           </div>
         </div>
         <div class="install-step">
-          <div class="step-num">2</div>
+          <div class="step-track"><div class="step-num">2</div><div class="step-line"></div></div>
           <div class="step-content">
             <h3>Register the MCP server</h3>
             <p>Add to <code>~/.claude/settings.json</code>:</p>
@@ -194,10 +220,10 @@ npm install -g prompt-caching
           </div>
         </div>
         <div class="install-step">
-          <div class="step-num">3</div>
+          <div class="step-track"><div class="step-num">3</div></div>
           <div class="step-content">
             <h3>Restart Claude Code</h3>
-            <p>The plugin activates automatically. Check savings anytime with the <code>get_session_stats</code> tool.</p>
+            <p>The plugin activates automatically. Check savings anytime with the <code>get_cache_stats</code> tool.</p>
           </div>
         </div>
       </div>
@@ -206,18 +232,18 @@ npm install -g prompt-caching
 
   <section class="section section-cta">
     <div class="container cta-inner">
-      <h2>Ready to stop paying full price?</h2>
-      <p>Open source, MIT licensed, zero lock-in.</p>
+      <p class="cta-eyebrow">Open source · MIT · Zero lock-in</p>
+      <h2>Ready to stop paying<br/><em>for the same tokens twice?</em></h2>
       <div class="hero-actions">
         <a href="https://github.com/flightlesstux/prompt-caching" class="btn-primary">View on GitHub</a>
-        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" class="btn-secondary">Contribute</a>
+        <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md" class="btn-ghost">Contribute →</a>
       </div>
     </div>
   </section>
 
   <footer class="footer">
     <div class="container footer-inner">
-      <span>prompt-caching — MIT License</span>
+      <span class="footer-brand">prompt<span class="logo-sep">—</span>caching</span>
       <div class="footer-links">
         <a href="https://github.com/flightlesstux/prompt-caching">GitHub</a>
         <a href="https://github.com/flightlesstux/prompt-caching/blob/main/CONTRIBUTING.md">Contributing</a>
