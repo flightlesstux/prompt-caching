@@ -1,0 +1,35 @@
+# Build output
+dist/
+build/
+*.js.map
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+
+# Testing
+coverage/
+.vitest-cache/
+
+# Misc
+*.tsbuildinfo
+.prompt-cache-session.json
