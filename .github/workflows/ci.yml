@@ -12,12 +12,15 @@ concurrency:
 
 jobs:
   quality:
-    name: Test (${{ matrix.os }}, Node ${{ matrix.node-version }})
-    runs-on: ${{ matrix.os }}
+    name: Test (${{ matrix.os.name }}, Node ${{ matrix.node-version }})
+    runs-on: ${{ matrix.os.runner }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os:
+          - { name: linux,   runner: [self-hosted, linux]   }
+          - { name: macos,   runner: [self-hosted, macos]   }
+          - { name: windows, runner: [self-hosted, windows] }
         node-version: [18, 20, 22]
 
     steps:
@@ -42,20 +45,22 @@ jobs:
         run: npm run test -- --coverage
 
       - name: Upload coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == 20
+        if: matrix.os.name == 'linux' && matrix.node-version == 20
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  # Verify the compiled binary is executable on each OS
   smoke-test:
-    name: Smoke test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Smoke test (${{ matrix.os.name }})
+    runs-on: ${{ matrix.os.runner }}
     needs: quality
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os:
+          - { name: linux,   runner: [self-hosted, linux]   }
+          - { name: macos,   runner: [self-hosted, macos]   }
+          - { name: windows, runner: [self-hosted, windows] }
 
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +91,7 @@ jobs:
 
   benchmark:
     name: Cache Hit Rate Benchmarks
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     needs: quality
     if: github.event_name == 'pull_request'
 
@@ -133,7 +138,7 @@ jobs:
 
   commit-lint:
     name: Conventional Commits
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     if: github.event_name == 'pull_request'
 
     steps:
