@@ -58,16 +58,22 @@ Issues tagged [`help wanted`](../../issues?q=label%3A%22help+wanted%22) are high
 ```bash
 git clone https://github.com/<your-fork>/prompt-caching.git
 cd prompt-caching
-npm install
-npm run dev          # tsx watch mode
-npm run test:watch   # vitest watch
+make install
+make dev          # watch mode — rebuilds on save
 ```
 
-Before every commit:
+Before every commit, run the full verification suite:
 ```bash
-npm run typecheck    # must pass — zero type errors
-npm run lint         # must pass — zero warnings
-npm run test         # must pass — zero failing tests
+make verify       # typecheck + lint + test in sequence — must all pass
+```
+
+All other available commands:
+```bash
+make              # show all commands with descriptions
+make build        # compile TypeScript → dist/
+make test-watch   # vitest watch mode
+make benchmark    # cache hit rate benchmarks
+make docker-build # build local Docker image
 ```
 
 ### Running Against a Real Anthropic API
