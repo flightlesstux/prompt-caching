@@ -16,6 +16,10 @@ Thank you for your interest in contributing. This plugin aims to be the definiti
 
 ---
 
+## Engineering Mindset
+
+Read [BEST_PRACTICES.md](../BEST_PRACTICES.md) before writing any code. It defines the non-negotiable rules for tool design, server behavior, responses, security, and cross-platform support. PRs that violate these rules will be rejected regardless of functionality.
+
 ## Before You Start
 
 - **Check existing issues** before opening a new one — your idea or bug may already be tracked.

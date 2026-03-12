@@ -8,6 +8,14 @@ This is a Claude Code MCP plugin that automatically applies Anthropic's [prompt 
 
 **Core value proposition**: In agentic coding sessions, large system prompts, tool definitions, and document context are re-sent on every turn. This plugin identifies these stable, reusable segments and marks them for caching, achieving up to 90% cost reduction on repeated content.
 
+## Engineering Mindset
+
+All code in this repo follows [BEST_PRACTICES.md](BEST_PRACTICES.md). Read it before writing any code. Key rules that affect every file:
+- stdout is the MCP wire — never `console.log()` in tool handlers, use `stderr`
+- Every tool handler must catch all errors and return `{ isError: true, ... }` — never throw
+- Every tool must define `outputSchema` — no schema, no merge
+- The irony rule: this plugin must never flood context itself — tool responses must be small and structured
+
 ## Cross-Platform Requirements
 
 This plugin runs on **Linux, macOS, and Windows**. Every code path and every test must pass on all three. CI runs a 9-job matrix (3 OS × 3 Node versions).
