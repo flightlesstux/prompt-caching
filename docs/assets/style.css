@@ -166,6 +166,14 @@ a:hover { text-decoration: underline; }
   width: 100%;
 }
 
+.slogan {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 28px;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
