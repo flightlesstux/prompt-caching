@@ -36,6 +36,10 @@ sub, sup {
   position: static;
 }
 
+strong, b, em, code, span {
+  vertical-align: baseline;
+}
+
 body {
   font-family: var(--font);
   background: var(--bg);
