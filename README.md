@@ -137,11 +137,25 @@ Cache creation costs 1.25× normal. Cache reads cost 0.1×. Break-even at turn 2
 
 ## Installation
 
+### Claude Code — one command
+
+```
+/plugin install flightlesstux/prompt-caching
+```
+
+That's it. No npm, no config file, no restart. Claude Code's plugin system handles everything automatically.
+
+---
+
+### Other AI clients (Cursor, Windsurf, Zed, Continue.dev)
+
+MCP is the integration path for non-Claude clients. Install the package globally and point your client at it:
+
 ```bash
 npm install -g prompt-caching
 ```
 
-### Claude Code
+Then add to your client's MCP config:
 
 ```json
 {
@@ -153,39 +167,13 @@ npm install -g prompt-caching
 }
 ```
 
-Add to `~/.claude/settings.json` and restart Claude Code.
-
-### Cursor
-
-Add to `.cursor/mcp.json` in your project:
-
-```json
-{
-  "mcpServers": {
-    "prompt-caching": {
-      "command": "prompt-caching"
-    }
-  }
-}
-```
-
-### Windsurf
-
-Add to your Windsurf MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "prompt-caching": {
-      "command": "prompt-caching"
-    }
-  }
-}
-```
-
-### Any other MCP client
-
-The server speaks standard MCP over stdio. Point any MCP-compatible client at the `prompt-caching` binary.
+| Client | Config file |
+|---|---|
+| Cursor | `.cursor/mcp.json` |
+| Windsurf | Windsurf MCP settings |
+| Zed | Zed MCP settings |
+| Continue.dev | `.continue/config.json` |
+| Any MCP client | stdio — point at the `prompt-caching` binary |
 
 ---
 

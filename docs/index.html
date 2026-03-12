@@ -58,17 +58,16 @@
         <div class="hero-code">
           <div class="code-titlebar">
             <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-            <span class="code-title">~/.claude/settings.json</span>
+            <span class="code-title">Claude Code</span>
           </div>
-          <pre><code><span class="c-brace">{</span>
-  <span class="c-key">"mcpServers"</span><span class="c-colon">:</span> <span class="c-brace">{</span>
-    <span class="c-key">"prompt-caching"</span><span class="c-colon">:</span> <span class="c-brace">{</span>
-      <span class="c-key">"command"</span><span class="c-colon">:</span> <span class="c-str">"prompt-caching"</span>
-    <span class="c-brace">}</span>
-  <span class="c-brace">}</span>
-<span class="c-brace">}</span></code></pre>
+          <pre><code><span class="c-comment"># One command. That's it.</span>
+
+<span class="c-str">/plugin install flightlesstux/prompt-caching</span>
+
+<span class="c-comment"># No npm. No config file. No restart.</span>
+<span class="c-comment"># Savings start on the next turn.</span></code></pre>
           <div class="code-footer">
-            <span class="code-badge">npm install -g prompt-caching</span>
+            <span class="code-badge">Other clients → MCP config</span>
           </div>
         </div>
         <div class="savings-pill animate-6">
@@ -196,35 +195,49 @@
     <div class="container">
       <div class="section-header">
         <h2>Installation</h2>
+        <p class="section-sub">One command for Claude Code. MCP config for everyone else.</p>
       </div>
 
-      <div class="install-steps">
-        <div class="install-step">
-          <div class="step-track"><div class="step-num">1</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h3>Install the package</h3>
-            <pre><code>npm install -g prompt-caching</code></pre>
+      <div class="install-tabs">
+        <div class="install-primary">
+          <div class="install-label">
+            <span class="install-label-badge">Claude Code</span>
+            <span class="install-label-note">recommended</span>
+          </div>
+          <div class="install-card">
+            <div class="install-card-body">
+              <p>Run this inside Claude Code — no npm, no config file, no restart needed:</p>
+              <pre><code><span class="c-str">/plugin install flightlesstux/prompt-caching</span></code></pre>
+              <p class="install-note">Claude Code's plugin system handles everything automatically. The <code>get_cache_stats</code> tool is available immediately after install.</p>
+            </div>
           </div>
         </div>
-        <div class="install-step">
-          <div class="step-track"><div class="step-num">2</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h3>Register the MCP server</h3>
-            <p>Add to <code>~/.claude/settings.json</code>:</p>
-            <pre><code>{
+
+        <div class="install-divider">
+          <span>for other clients</span>
+        </div>
+
+        <div class="install-steps">
+          <div class="install-step">
+            <div class="step-track"><div class="step-num">1</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <h3>Install globally via npm</h3>
+              <pre><code>npm install -g prompt-caching</code></pre>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="step-track"><div class="step-num">2</div></div>
+            <div class="step-content">
+              <h3>Add to your client's MCP config</h3>
+              <p>Cursor → <code>.cursor/mcp.json</code> &nbsp;·&nbsp; Windsurf → MCP settings &nbsp;·&nbsp; Any MCP client → stdio</p>
+              <pre><code>{
   <span class="c-key">"mcpServers"</span>: {
     <span class="c-key">"prompt-caching"</span>: {
       <span class="c-key">"command"</span>: <span class="c-str">"prompt-caching"</span>
     }
   }
 }</code></pre>
-          </div>
-        </div>
-        <div class="install-step">
-          <div class="step-track"><div class="step-num">3</div></div>
-          <div class="step-content">
-            <h3>Restart Claude Code</h3>
-            <p>The plugin activates automatically. Check savings anytime with the <code>get_cache_stats</code> tool.</p>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,16 @@
+{
+  "name": "prompt-caching",
+  "version": "0.1.0",
+  "description": "Automatic prompt caching for Claude Code. Cuts Anthropic API token costs by up to 90% with zero configuration.",
+  "author": "Ercan Ermis",
+  "homepage": "https://prompt-caching.ai",
+  "repository": "https://github.com/flightlesstux/prompt-caching",
+  "license": "MIT",
+  "keywords": ["caching", "tokens", "cost", "anthropic", "mcp", "performance"],
+  "mcpServers": {
+    "prompt-caching": {
+      "command": "npx",
+      "args": ["-y", "prompt-caching"]
+    }
+  }
+}
