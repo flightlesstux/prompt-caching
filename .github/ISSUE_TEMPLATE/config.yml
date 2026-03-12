@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/prompt-caching/prompt-caching/discussions
+    about: Ask questions, share session benchmarks, and discuss ideas here — not in issues.
+  - name: Security Vulnerability
+    url: https://github.com/prompt-caching/prompt-caching/security/advisories/new
+    about: Report security issues privately here.
