@@ -1,0 +1,12 @@
+# Global fallback — maintainers review everything
+* @prompt-caching/maintainers
+
+# Core cache logic — requires 2 approvals
+src/optimizer/   @prompt-caching/maintainers @prompt-caching/core
+src/session/     @prompt-caching/maintainers @prompt-caching/core
+
+# Session modes — 1 approval sufficient
+src/modes/       @prompt-caching/maintainers
+
+# CI/CD and repo config — maintainers only
+.github/         @prompt-caching/maintainers
