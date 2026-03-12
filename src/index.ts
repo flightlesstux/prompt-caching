@@ -1,10 +1,15 @@
 import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { Server } from '@modelcontextprotocol/sdk/server/index.js'
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import { getConfigPath } from './utils/paths.js'
+import { loadConfig, analyzeMessages, type MessageParam, type SystemPrompt, type ToolDef } from './cache-analyzer.js'
+import { optimizeMessages } from './prompt-optimizer.js'
+import { TokenTracker } from './token-tracker.js'
 
 const args = process.argv.slice(2)
-
 if (args.includes('--version')) {
   const __dirname = dirname(fileURLToPath(import.meta.url))
   const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8')) as { version: string }
@@ -12,6 +17,210 @@ if (args.includes('--version')) {
   process.exit(0)
 }
 
-// MCP server entry point — implementation coming in subsequent commits
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8')) as { version: string }
+
+const config = loadConfig()
+const tracker = new TokenTracker()
+
 process.stderr.write(`[prompt-caching] Config path: ${getConfigPath()}\n`)
-process.stderr.write('[prompt-caching] MCP server starting...\n')
+process.stderr.write('[prompt-caching] Starting MCP server...\n')
+
+const server = new Server(
+  { name: 'prompt-caching', version: pkg.version },
+  { capabilities: { tools: {} } }
+)
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [
+    {
+      name: 'optimize_messages',
+      description:
+        'Inject cache_control breakpoints into a messages array so stable content is cached by the Anthropic API. Returns the optimized messages, system, and tools alongside a change summary. Use before every API call to reduce token costs.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          messages: {
+            type: 'array',
+            description: 'Messages array to optimize.',
+            items: { type: 'object' },
+          },
+          system: {
+            description: 'Optional system prompt — string or array of text blocks.',
+          },
+          tools: {
+            type: 'array',
+            description: 'Optional tool definitions array.',
+            items: { type: 'object' },
+          },
+        },
+        required: ['messages'],
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          optimizedMessages: { type: 'array', items: { type: 'object' } },
+          optimizedSystem: {},
+          optimizedTools: { type: 'array', items: { type: 'object' } },
+          breakpointsAdded: { type: 'number' },
+          cacheableTokens: { type: 'number' },
+          segments: { type: 'array', items: { type: 'object' } },
+        },
+      },
+    },
+    {
+      name: 'get_cache_stats',
+      description:
+        'Return cumulative token usage and cache savings for the current MCP session. Includes hit rate and estimated savings.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {},
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          turns: { type: 'number' },
+          totalInputTokens: { type: 'number' },
+          totalOutputTokens: { type: 'number' },
+          cacheCreationTokens: { type: 'number' },
+          cacheReadTokens: { type: 'number' },
+          estimatedSavings: { type: 'number' },
+          hitRate: { type: 'number' },
+        },
+      },
+    },
+    {
+      name: 'reset_cache_stats',
+      description: 'Reset session token usage statistics to zero.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {},
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          reset: { type: 'boolean' },
+        },
+      },
+    },
+    {
+      name: 'analyze_cacheability',
+      description:
+        'Dry-run: show which segments of a messages array would receive cache_control breakpoints and the estimated token savings, without modifying anything.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          messages: {
+            type: 'array',
+            description: 'Messages array to analyze.',
+            items: { type: 'object' },
+          },
+          system: {
+            description: 'Optional system prompt — string or array of text blocks.',
+          },
+          tools: {
+            type: 'array',
+            description: 'Optional tool definitions array.',
+            items: { type: 'object' },
+          },
+        },
+        required: ['messages'],
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          segments: { type: 'array', items: { type: 'object' } },
+          totalEstimatedTokens: { type: 'number' },
+          cacheableTokens: { type: 'number' },
+          recommendedBreakpoints: { type: 'number' },
+        },
+      },
+    },
+  ],
+}))
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: toolArgs } = request.params
+
+  try {
+    switch (name) {
+      case 'optimize_messages': {
+        const { messages, system, tools } = toolArgs as {
+          messages: MessageParam[]
+          system?: SystemPrompt
+          tools?: ToolDef[]
+        }
+        if (!Array.isArray(messages)) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: 'Error: messages must be an array' }],
+          }
+        }
+        const result = optimizeMessages(messages, system, tools, config)
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({
+                optimizedMessages: result.optimizedMessages,
+                optimizedSystem: result.optimizedSystem,
+                optimizedTools: result.optimizedTools,
+                breakpointsAdded: result.breakpointsAdded,
+                cacheableTokens: result.analysis.cacheableTokens,
+                segments: result.analysis.segments,
+              }),
+            },
+          ],
+        }
+      }
+
+      case 'get_cache_stats': {
+        return {
+          content: [{ type: 'text', text: JSON.stringify(tracker.getStats()) }],
+        }
+      }
+
+      case 'reset_cache_stats': {
+        tracker.reset()
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ reset: true }) }],
+        }
+      }
+
+      case 'analyze_cacheability': {
+        const { messages, system, tools } = toolArgs as {
+          messages: MessageParam[]
+          system?: SystemPrompt
+          tools?: ToolDef[]
+        }
+        if (!Array.isArray(messages)) {
+          return {
+            isError: true,
+            content: [{ type: 'text', text: 'Error: messages must be an array' }],
+          }
+        }
+        const analysis = analyzeMessages(messages, system, tools, config)
+        return {
+          content: [{ type: 'text', text: JSON.stringify(analysis) }],
+        }
+      }
+
+      default:
+        return {
+          isError: true,
+          content: [{ type: 'text', text: `Error: unknown tool: ${name}` }],
+        }
+    }
+  } catch (err) {
+    return {
+      isError: true,
+      content: [
+        { type: 'text', text: `Error: ${err instanceof Error ? err.message : String(err)}` },
+      ],
+    }
+  }
+})
+
+const transport = new StdioServerTransport()
+await server.connect(transport)
+process.stderr.write('[prompt-caching] MCP server ready\n')
