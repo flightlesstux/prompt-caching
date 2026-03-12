@@ -1,0 +1,64 @@
+{
+  "name": "prompt-caching",
+  "version": "0.1.0",
+  "description": "Automatic prompt caching for Claude Code. Cuts token costs by up to 90%.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "prompt-caching": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "benchmark": "vitest run src/__tests__/benchmarks/ --passWithNoTests"
+  },
+  "keywords": [
+    "claude",
+    "anthropic",
+    "mcp",
+    "prompt-caching",
+    "claude-code",
+    "token-optimization",
+    "llm",
+    "developer-tools",
+    "cost-reduction"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.8.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.0.0",
+    "@commitlint/types": "^19.0.0",
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "eslint": "^9.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flightlesstux/prompt-caching.git"
+  },
+  "bugs": {
+    "url": "https://github.com/flightlesstux/prompt-caching/issues"
+  },
+  "homepage": "https://flightlesstux.github.io/prompt-caching/"
+}
