@@ -212,6 +212,34 @@ All fields are optional — defaults work well for most projects.
 
 ---
 
+## FAQ
+
+### "Claude Code already does prompt caching automatically — why does this exist?"
+
+Yes, and that's correct. Claude Code handles prompt caching for its own API calls automatically. If you're just using Claude Code as a coding assistant day to day, caching is already working and you don't need this plugin.
+
+This plugin is for a different layer: **when you write code that calls the Anthropic API directly**. Your Python script, your Node app, your AI agent — none of those get automatic caching unless you place `cache_control` breakpoints in the right spots yourself. That's what this plugin handles.
+
+Think of it this way:
+- Claude Code using the API → already cached ✅
+- Your app calling the API → not cached unless you do it → this plugin does it for you ✅
+
+See [Anthropic's prompt caching docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) for the full picture on how automatic vs. explicit caching works.
+
+### "Does this work with Claude Code's built-in sessions?"
+
+No. Claude Code's own conversation context is managed internally — this plugin cannot intercept or modify those API calls. The MCP tools (`optimize_messages`, `get_cache_stats`, etc.) are called explicitly by your own code when you make Anthropic API calls.
+
+### "Which models support prompt caching?"
+
+Claude Opus 4.6/4.5/4.1/4, Sonnet 4.6/4.5/4, Sonnet 3.7, Haiku 4.5, Haiku 3.5, and Haiku 3. See the [pricing table](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing) for per-model rates.
+
+### "What's the minimum prompt size for caching to kick in?"
+
+It varies by model — from 1024 tokens (Sonnet 4, Opus 4) to 4096 tokens (Opus 4.6, Haiku 4.5). Prompts shorter than the threshold are processed normally without caching, even if marked with `cache_control`.
+
+---
+
 ## Requirements
 
 - Node.js ≥ 18
