@@ -1,0 +1,24 @@
+# Source not needed in image — compiled by builder stage
+src/
+docs/
+coverage/
+
+# Dev and config files
+*.md
+*.yml
+*.yaml
+.github/
+.git/
+.gitignore
+.gitattributes
+.env*
+.eslintrc*
+eslint.config.*
+tsconfig*.json
+commitlint.config.*
+.releaserc.json
+vitest.config.*
+
+# Build artifacts from local machine
+dist/
+node_modules/
