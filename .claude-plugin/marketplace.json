@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "ercan-ermis",
   "owner": {
-    "name": "Ercan Ermis",
+    "name": "Ercan Ermis (@flightlesstux)",
     "email": "eposta@ercanermis.com"
   },
   "metadata": {
@@ -16,7 +16,7 @@
       "description": "Automatic prompt caching for Claude Code. Intelligently injects cache_control markers into system prompts, tool definitions, and document context to achieve up to 90% reduction in repeated token costs.",
       "version": "1.1.1",
       "author": {
-        "name": "Ercan Ermis",
+        "name": "Ercan Ermis (@flightlesstux)",
         "email": "eposta@ercanermis.com"
       },
       "category": "development",
