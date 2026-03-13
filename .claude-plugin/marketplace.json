@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "Automatic prompt caching for Claude Code. Cuts Anthropic API token costs by up to 90% with zero configuration.",
-    "version": "1.0.0"
+    "version": "1.1.1"
   },
   "plugins": [
     {
       "name": "prompt-caching",
       "source": "./",
       "description": "Automatic prompt caching for Claude Code. Intelligently injects cache_control markers into system prompts, tool definitions, and document context to achieve up to 90% reduction in repeated token costs.",
-      "version": "1.0.0",
+      "version": "1.1.1",
       "author": {
         "name": "Ercan Ermis",
         "email": "eposta@ercanermis.com"

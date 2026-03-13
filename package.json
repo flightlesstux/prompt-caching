@@ -1,6 +1,6 @@
 {
   "name": "prompt-caching-mcp",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Automatic prompt caching for Claude Code. Cuts token costs by up to 90%.",
   "type": "module",
   "main": "dist/index.js",
