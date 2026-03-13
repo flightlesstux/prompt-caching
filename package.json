@@ -1,11 +1,11 @@
 {
-  "name": "prompt-caching",
+  "name": "prompt-caching-mcp",
   "version": "1.0.0",
   "description": "Automatic prompt caching for Claude Code. Cuts token costs by up to 90%.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "prompt-caching": "dist/index.js"
+    "prompt-caching-mcp": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",

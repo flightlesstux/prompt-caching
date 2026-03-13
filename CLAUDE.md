@@ -136,7 +136,7 @@ In `~/.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "prompt-caching": {
+    "prompt-caching-mcp": {
       "command": "node",
       "args": ["/path/to/prompt-caching/dist/index.js"]
     }

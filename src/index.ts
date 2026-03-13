@@ -21,7 +21,7 @@ const args = process.argv.slice(2)
 if (args.includes('--version')) {
   const __dirname = dirname(fileURLToPath(import.meta.url))
   const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8')) as { version: string }
-  process.stdout.write(`prompt-caching v${pkg.version}\n`)
+  process.stdout.write(`prompt-caching-mcp v${pkg.version}\n`)
   process.exit(0)
 }
 
@@ -31,11 +31,11 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'))
 const config = loadConfig()
 const tracker = new TokenTracker()
 
-process.stderr.write(`[prompt-caching] Config path: ${getConfigPath()}\n`)
-process.stderr.write('[prompt-caching] Starting MCP server...\n')
+process.stderr.write(`[prompt-caching-mcp] Config path: ${getConfigPath()}\n`)
+process.stderr.write('[prompt-caching-mcp] Starting MCP server...\n')
 
 const server = new Server(
-  { name: 'prompt-caching', version: pkg.version },
+  { name: 'prompt-caching-mcp', version: pkg.version },
   { capabilities: { tools: {} } }
 )
 

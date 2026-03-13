@@ -3,7 +3,7 @@
 > A Claude-first MCP plugin that automatically injects prompt cache breakpoints into your AI sessions — cutting Anthropic API token costs by up to 90% on repeated content with zero configuration.
 
 [![CI](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml/badge.svg)](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/prompt-caching)](https://www.npmjs.com/package/prompt-caching)
+[![npm version](https://img.shields.io/npm/v/prompt-caching-mcp)](https://www.npmjs.com/package/prompt-caching-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![codecov](https://codecov.io/gh/flightlesstux/prompt-caching/branch/main/graph/badge.svg)](https://codecov.io/gh/flightlesstux/prompt-caching)
@@ -152,7 +152,7 @@ That's it. No npm, no config file, no restart. Claude Code's plugin system handl
 MCP is the integration path for non-Claude clients. Install the package globally and point your client at it:
 
 ```bash
-npm install -g prompt-caching
+npm install -g prompt-caching-mcp
 ```
 
 Then add to your client's MCP config:
@@ -160,8 +160,8 @@ Then add to your client's MCP config:
 ```json
 {
   "mcpServers": {
-    "prompt-caching": {
-      "command": "prompt-caching"
+    "prompt-caching-mcp": {
+      "command": "prompt-caching-mcp"
     }
   }
 }
@@ -173,7 +173,7 @@ Then add to your client's MCP config:
 | Windsurf | Windsurf MCP settings |
 | Zed | Zed MCP settings |
 | Continue.dev | `.continue/config.json` |
-| Any MCP client | stdio — point at the `prompt-caching` binary |
+| Any MCP client | stdio — point at the `prompt-caching-mcp` binary |
 
 ---
 

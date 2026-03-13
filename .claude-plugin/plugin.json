@@ -8,9 +8,9 @@
   "license": "MIT",
   "keywords": ["caching", "tokens", "cost", "anthropic", "mcp", "performance"],
   "mcpServers": {
-    "prompt-caching": {
+    "prompt-caching-mcp": {
       "command": "npx",
-      "args": ["-y", "prompt-caching"]
+      "args": ["-y", "prompt-caching-mcp"]
     }
   }
 }

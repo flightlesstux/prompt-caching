@@ -14,7 +14,7 @@ assignees: ""
 
 - Claude Code version:
 - OS:
-- Plugin version (`npm list prompt-caching`):
+- Plugin version (`npm list prompt-caching-mcp`):
 - Session mode detected: `bugfix` / `refactor` / `general` / `freezing`
 
 ## Minimal reproduction
