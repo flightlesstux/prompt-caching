@@ -1,6 +1,6 @@
 # prompt-caching
 
-> A Claude-first MCP plugin that automatically injects prompt cache breakpoints into your AI sessions — cutting Anthropic API token costs by up to 90% on repeated content with zero configuration.
+> An MCP plugin that helps developers understand, optimize, and debug Anthropic's prompt caching in their own applications — with tools for injecting `cache_control` breakpoints, analyzing cacheability, and tracking real-time cache savings.
 
 [![CI](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml/badge.svg)](https://github.com/flightlesstux/prompt-caching/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/prompt-caching-mcp)](https://www.npmjs.com/package/prompt-caching-mcp)
@@ -12,31 +12,35 @@
 
 ## Who is this for?
 
-This plugin is built for **Claude and the Anthropic API first**. The prompt caching feature (`cache_control`) is an Anthropic-specific capability — that's where you get the full 90% savings.
+This plugin is built for **developers building their own applications with the Anthropic API**.
 
-Because it's delivered as an MCP server, other MCP-compatible clients can also connect to it. We can't guarantee full compatibility or caching benefits outside the Anthropic ecosystem, but it works anywhere MCP is supported.
+> **Important note for Claude Code users:** Claude Code already handles prompt caching automatically for its own API calls — system prompts, tool definitions, and conversation history are cached out of the box. You cannot add more caching on top of Claude Code's own sessions, and you don't need to. See [Anthropic's prompt caching docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) for details on how automatic caching works.
 
-| Client | Works with this plugin | Full caching benefit |
-|---|---|---|
-| **Claude Code** | ✅ | ✅ Built for this |
-| **Cursor** | ✅ | ✅ When calling Anthropic API |
-| **Windsurf** | ✅ | ✅ When calling Anthropic API |
-| **Zed** | ✅ | ✅ When calling Anthropic API |
-| **Continue.dev** | ✅ | ✅ When calling Anthropic API |
-| Other MCP clients | ⚠️ Best effort | ⚠️ Anthropic API only |
-| Non-Anthropic models | ⚠️ MCP tools available | ❌ No caching effect |
+This plugin is useful when:
+- You are **building an app or agent** with the Anthropic SDK and want to optimize your own API calls
+- You want **visibility into cache performance** — hit rates, tokens saved, cost breakdown — via MCP tools
+- You want to **analyze which parts of your prompts are cacheable** before committing to a caching strategy
+- You use **Cursor, Windsurf, Zed, or Continue.dev** and those clients are not automatically handling `cache_control` placement for Anthropic API calls
 
-> **How caching works**: Anthropic's prompt caching API stores stable content (system prompts, tool definitions, repeated file reads) server-side for 5 minutes. Cache reads cost **0.1×** instead of **1×** — a 90% reduction per cached token. This plugin places the `cache_control` breakpoints automatically so you don't have to.
+| Use case | Value |
+|---|---|
+| Building apps with Anthropic SDK | ✅ `optimize_messages` injects breakpoints for you |
+| Debugging cache behavior | ✅ `analyze_cacheability` dry-runs your prompt |
+| Tracking savings | ✅ `get_cache_stats` shows real-time hit rate and cost reduction |
+| Claude Code's own API usage | ❌ Already cached automatically — this plugin doesn't help here |
+| Non-Anthropic models | ❌ `cache_control` is Anthropic-only |
+
+> **How prompt caching works**: Anthropic's caching API stores stable content server-side (5-minute TTL by default, 1-hour available). Cache reads cost **0.1×** instead of **1×** — a 90% reduction. See the [official docs](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) for the full pricing table and supported models.
 
 ---
 
 ## The problem
 
-Every turn in an AI coding session re-sends your entire context — system prompt, tool definitions, open files, conversation history. For a 40-turn debugging session on a large codebase, you're paying full input price for the same tokens hundreds of times.
+When you build your own app or agent with the Anthropic SDK, every API call re-sends your entire prompt — system instructions, tool definitions, document context, conversation history. For a 40-turn agentic session, you're paying full input price for the same tokens over and over.
 
-Anthropic's [prompt caching API](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) eliminates that cost — but only if `cache_control` breakpoints are placed correctly on content that stays stable between turns.
+Anthropic's [prompt caching API](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) eliminates that cost — but only if `cache_control` breakpoints are placed correctly on content that stays stable between turns. Placing them wrong causes cache misses that waste the 1.25× write cost.
 
-**This plugin does that automatically.**
+**This plugin places them correctly, automatically.**
 
 ---
 
