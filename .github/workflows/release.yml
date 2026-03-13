@@ -45,8 +45,8 @@ jobs:
   docker:
     name: Build & Push Docker image
     runs-on: ubuntu-latest
-    # Only run when DOCKERHUB_USERNAME is configured
-    if: ${{ vars.RELEASE_ENABLED == 'true' }}
+    # Only run when DockerHub credentials are configured
+    if: ${{ vars.RELEASE_ENABLED == 'true' && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
     needs: release
 
     steps:
